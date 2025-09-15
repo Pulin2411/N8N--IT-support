@@ -96,11 +96,11 @@ Experienced with ESET/SentinelOne endpoints, Microsoft stack, AWS (Solutions Arc
 
 Links
 
-GitHub: github.com/<your-handle>
+GitHub: https://github.com/Pulin2411
 
-LinkedIn: linkedin.com/in/<your-handle>
+LinkedIn: linkedin.com/in/pulin-shah-741212b
 
-Email: S_pulin@hotmail.com
+Email: pulin2411@gmail.com
 
 
 
