@@ -82,7 +82,7 @@ This repository contains two n8n workflow JSONs: one to ingest an IT Customer Su
 - Analytics: log user questions and responses to a database or data warehouse for QA review and continuous improvement.[2]
 
 ### About Author
-Pulin Shah — Lead IT Support Coordinator | IT Service Delivery | n8n Automations 
+Pulin Shah — Lead IT Support Coordinator | IT Service Delivery | n8n Automations |ML|DL|Data Science|Prompt Enigneering|RAG|Gen-AI|EDA
 
 IT service delivery leader with 20+ years across incident, change, and problem management, PSA/RMM operations (ConnectWise), and endpoint security. Designs and operates Service Desk workflows with SLA rigor, and builds support automations using n8n, LLMs, and vector search for policy-aligned responses.
 
