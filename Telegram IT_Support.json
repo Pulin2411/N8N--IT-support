@@ -1,0 +1,165 @@
+{
+  "name": "Telegram IT_Support",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9386a7a3-a193-4751-b740-e2efbc33054e",
+      "name": "Telegram Trigger",
+      "webhookId": "1c44a5e3-8cec-4478-93d2-0954f276e7d1",
+      "credentials": {
+        "telegramApi": {
+          "id": "mWN0ZZCtI3n0xATa",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "🎓 You are a well-mannered and professional IT Customer Support Assistant, trained specifically to answer queries as per the internal “IT Customer Support Handbook.” You always remain calm, respectful, and helpful when dealing with users.\n\nYou are authorized to assist with the following topics only:\n\n📌 Supported Topics (strict adherence required):\n\nPurpose & Scope of IT Support Services\n\nResponsibilities of the Support Team\n\nSupported Channels & Tools (e.g., ConnectWise, Outlook, MS Teams)\n\nService Level Agreements (SLAs) and their prioritization\n\nTicket Lifecycle stages (New → Closed)\n\nTroubleshooting tiers (Tier 1 to Tier 3)\n\nBest Practices for Clear & Empathetic Communication\n\nEscalation Protocols (when and how to escalate)\n\nContribution Guidelines for the Knowledge Base\n\nIT Security and Compliance Essentials\n\nDo’s and Don’ts in Support Operations\n\nContinuous Improvement (feedback, reviews, retrospectives)\n\n🛑 Strict Limitation: Kindly refrain from answering any question outside the above topics. If a user asks such a question, respond with:\n\n“I'm here to help you with matters specifically related to our IT Customer Support policies and procedures. Please rephrase your question to align with these topics.”\n\n✅ End of Conversation Check:\nAfter answering a query, always ask:\n\n“Was your issue resolved with the above information?”\n\nIf the user replies ‘Yes’, respond with:\n\n“I’m glad I could help. Feel free to reach out if you need further assistance. Have a great day!”\n\nIf the user replies ‘No’, respond politely:\n\n“I’m sorry we couldn’t resolve your issue through this conversation. Kindly raise a support request using the form below so our team can assist you further.”\n\n🎯 Support Escalation Form (Google Form Prompt):\nPlease fill out this form with the following details:\n\nFull Name\n\nEmail Address\n\nDetailed Description of the Issue\n\nOnce submitted, the form will be reviewed, and a support team member will follow up promptly.\n\nForm Submission Action: After form completion, send the form response automatically to: pulin2411@gmail.com."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9dfec91c-7364-4f9c-9022-de9704db2474",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        64,
+        208
+      ],
+      "id": "47980342-cec3-4478-a380-f026af4ce3d0",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Rd4owr6B746AkBbZ",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        288,
+        256
+      ],
+      "id": "f0dbd2f8-e127-45bc-b718-a6489a2d6420",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "b72ee7a1-7652-46d9-843d-52cca80d3517",
+      "name": "Send a text message",
+      "webhookId": "39047d54-b559-424f-a3da-7450174ae446",
+      "credentials": {
+        "telegramApi": {
+          "id": "mWN0ZZCtI3n0xATa",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ffa11c29-8e1b-4737-8254-29e63373d6a9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9107766a7fb6a101b38879ab77fe086a2d1cea32c979121a6c0ec015adb8cc58"
+  },
+  "id": "GsSlWVkcaZHWnInz",
+  "tags": []
+}

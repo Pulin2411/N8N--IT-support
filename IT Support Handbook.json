@@ -1,0 +1,200 @@
+{
+  "name": "IT Support Handbook",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1WhN4gIUiXZhdWf6G9mP0JiPRhEvjMbpU",
+          "mode": "list",
+          "cachedResultName": "IT_Customer_Support_Handbook.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1WhN4gIUiXZhdWf6G9mP0JiPRhEvjMbpU/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7edefb15-cd82-4b1c-bf7c-d15f22875ee1",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "in8ouuEhwi5A9mRz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "studentshandbooks",
+          "mode": "list",
+          "cachedResultName": "studentshandbooks"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        0
+      ],
+      "id": "c2e5ef8e-0d46-4120-8d86-9f7f776a31ec",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "i07F6I1lyr0gBwzl",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 512
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        352,
+        192
+      ],
+      "id": "6eb56dd2-985a-42ea-bff0-58f7cb7ce7f6",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Rd4owr6B746AkBbZ",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        192
+      ],
+      "id": "cff67047-9767-4fee-8cee-a576b6995645",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 50,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        560,
+        400
+      ],
+      "id": "05700dfd-a363-4642-bc7f-87771e02f07a",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFile",
+        "fileToWatch": {
+          "__rl": true,
+          "value": "1WhN4gIUiXZhdWf6G9mP0JiPRhEvjMbpU",
+          "mode": "list",
+          "cachedResultName": "IT_Customer_Support_Handbook.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1WhN4gIUiXZhdWf6G9mP0JiPRhEvjMbpU/view?usp=drivesdk"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        32,
+        0
+      ],
+      "id": "6ffbc6c6-afcd-45c3-9c33-21b1a2441010",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "yBVVr5Akf6BvQ5JF",
+          "name": "Google Drive account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d96ab98f-a3f9-4b3f-8cfa-16c2e00953a2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9107766a7fb6a101b38879ab77fe086a2d1cea32c979121a6c0ec015adb8cc58"
+  },
+  "id": "9CDdxivXFSeNB1Ub",
+  "tags": []
+}
